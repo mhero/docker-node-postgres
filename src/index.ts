@@ -12,7 +12,7 @@ const client = new Client({
 const app = express();
 
 app.get("/ping", async (req, res) => {
-  const database = await client.query("SELECT 1 + 1").then(() => "up").catch(() => "down");
+  const database = await client.query("SELECT * from users").then(res => res.rows).catch(() => "down");
 
   res.send({
     environment: process.env.NODE_ENV,
