@@ -1,16 +1,14 @@
 # docker-node-postgres
 Simple node(typescript) application with postgres db
 
-
-# Docker Compose for Node.js and PostgreSQL
-
+Docker Compose for Node.js and PostgreSQL
 Simple node(typescript) application with postgres db
 
-## Run
+### Run ###
 
     docker-compose up --build
 
-## Test
+## Test ###
 
 ```sh
 curl http://localhost:3000/ping
