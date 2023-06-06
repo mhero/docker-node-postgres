@@ -11,7 +11,7 @@ services:
     command: bash -c "npm run build && ./scripts/start.sh"
 
   postgres:
-    image: postgres:11.2-alpine
+    image: postgres:15.3-alpine3.18
     ports:
       - "5432:5432"
     volumes:
