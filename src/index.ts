@@ -3,30 +3,41 @@ import { Client } from "pg";
 
 const PORT = process.env.PORT || 3000;
 
-const client = new Client({
-  password: process.env.DB_PASSWORD,
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-});
+const setupDatabaseClient = () => {
+  return new Client({
+    password: process.env.DB_PASSWORD,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+  });
+};
 
+const client = setupDatabaseClient();
 const app = express();
 
 app.get("/ping", async (req, res) => {
-  const database = await client
-    .query("SELECT * from users")
-    .then((res) => res.rows)
-    .catch(() => "down");
-
-  res.send({
-    environment: process.env.NODE_ENV,
-    database,
-  });
+  try {
+    const result = await client.query("SELECT * FROM users");
+    res.send({
+      environment: process.env.NODE_ENV,
+      database: result.rows,
+    });
+  } catch (error) {
+    res.status(500).send({
+      environment: process.env.NODE_ENV,
+      database: "down",
+      error: error,
+    });
+  }
 });
 
 (async () => {
-  await client.connect();
-
-  app.listen(PORT, () => {
-    console.log("Started at http://localhost:%d", PORT);
-  });
+  try {
+    await client.connect();
+    app.listen(PORT, () => {
+      console.log(`Server started at http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
+    process.exit(1);
+  }
 })();
